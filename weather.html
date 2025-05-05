@@ -1,0 +1,278 @@
+`weather-app.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Weather App - ProDigy Infotech</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
+    color: #333;
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .weather-container {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 15px;
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  h1 {
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #004aad;
+  }
+  form {
+    margin-bottom: 25px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  input[type="text"] {
+    flex-grow: 1;
+    border: 2px solid #0073e6;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus {
+    border-color: #004aad;
+    outline: none;
+  }
+  button {
+    background-color: #004aad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #002f75;
+  }
+  .weather-info {
+    margin-top: 10px;
+  }
+  .location {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #002a63;
+  }
+  .temperature {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 10px 0;
+    color: #0073e6;
+  }
+  .condition {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 15px;
+    color: #0058cc;
+  }
+  .details {
+    font-size: 1rem;
+    text-align: left;
+    margin-top: 10px;
+  }
+  .details div {
+    margin: 5px 0;
+  }
+  .loading {
+    color: #004aad;
+    font-weight: 600;
+  }
+  .error {
+    color: #b00020;
+    margin-top: 10px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 400px) {
+    form {
+      flex-direction: column;
+    }
+    button {
+      width: 100%;
+      padding: 12px 0;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="weather-container" role="main" aria-label="Weather information container">
+  <h1>ProDigy Infotech Weather</h1>
+  <form id="location-form" aria-label="Location input form">
+    <input type="text" id="location-input" name="location" aria-label="Enter location" placeholder="Enter a city or location" autocomplete="off" />
+    <button type="submit" aria-label="Fetch weather">Get Weather</button>
+  </form>
+  <button id="geo-btn" aria-label="Get weather for my location" style="margin-bottom: 15px; background-color:#0073e6; border-radius: 8px; padding: 10px 20px; font-weight: 600; font-size: 16px; color: white; cursor: pointer; border:none; width: 100%;">Use My Location</button>
+  <div id="status" class="loading" role="status" aria-live="polite" style="display:none;"></div>
+  <div id="weather" aria-live="polite" style="display:none;">
+    <p class="location" id="weather-location"></p>
+    <p class="temperature" id="weather-temp"></p>
+    <p class="condition" id="weather-condition"></p>
+    <div class="details" id="weather-details"></div>
+  </div>
+  <div id="error" class="error" role="alert" aria-live="assertive" style="display:none;"></div>
+</div>
+
+<script>
+(() => {
+  const apiKey = 'e5a6dbb8b036f9ec5312a6181c96ded9'; // OpenWeatherMap API Key (free tier)
+  const weatherEl = document.getElementById('weather');
+  const statusEl = document.getElementById('status');
+  const errorEl = document.getElementById('error');
+  const locationForm = document.getElementById('location-form');
+  const locationInput = document.getElementById('location-input');
+  const geoBtn = document.getElementById('geo-btn');
+  const weatherLocation = document.getElementById('weather-location');
+  const weatherTemp = document.getElementById('weather-temp');
+  const weatherCondition = document.getElementById('weather-condition');
+  const weatherDetails = document.getElementById('weather-details');
+
+  function kelvinToCelsius(kelvin) {
+    return (kelvin - 273.15).toFixed(1);
+  }
+
+  function kelvinToFahrenheit(kelvin) {
+    return ((kelvin - 273.15) * 9/5 + 32).toFixed(1);
+  }
+
+  function showStatus(message) {
+    statusEl.textContent = message;
+    statusEl.style.display = 'block';
+    errorEl.style.display = 'none';
+    weatherEl.style.display = 'none';
+  }
+
+  function showError(message) {
+    errorEl.textContent = message;
+    errorEl.style.display = 'block';
+    statusEl.style.display = 'none';
+    weatherEl.style.display = 'none';
+  }
+
+  function showWeather(data) {
+    statusEl.style.display = 'none';
+    errorEl.style.display = 'none';
+
+    weatherLocation.textContent = `${data.name}, ${data.sys.country}`;
+    weatherTemp.textContent = `${kelvinToCelsius(data.main.temp)} °C / ${kelvinToFahrenheit(data.main.temp)} °F`;
+    weatherCondition.textContent = `${data.weather[0].main} - ${data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1)}`;
+
+    weatherDetails.innerHTML = `
+      <div><strong>Feels Like:</strong> ${kelvinToCelsius(data.main.feels_like)} °C / ${kelvinToFahrenheit(data.main.feels_like)} °F</div>
+      <div><strong>Humidity:</strong> ${data.main.humidity} %</div>
+      <div><strong>Wind Speed:</strong> ${data.wind.speed} m/s</div>
+      <div><strong>Pressure:</strong> ${data.main.pressure} hPa</div>
+    `;
+
+    weatherEl.style.display = 'block';
+  }
+
+  async function fetchWeatherByCoords(lat, lon) {
+    try {
+      showStatus('Fetching weather for your location...');
+      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`);
+      if (!res.ok) throw new Error('Failed to get weather data');
+      const data = await res.json();
+      showWeather(data);
+    } catch (err) {
+      showError('Could not retrieve weather data for your location.');
+      console.error(err);
+    }
+  }
+
+  async function fetchWeatherByLocation(location) {
+    if (!location.trim()) {
+      showError('Please enter a location.');
+      return;
+    }
+    try {
+      showStatus(`Fetching weather for ${location.trim()}...`);
+      const query = encodeURIComponent(location.trim());
+      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${apiKey}`);
+      if (!res.ok) {
+        if(res.status === 404) {
+          throw new Error('Location not found.');
+        } else {
+          throw new Error('Failed to get weather data');
+        }
+      }
+      const data = await res.json();
+      showWeather(data);
+    } catch (err) {
+      showError(err.message);
+      console.error(err);
+    }
+  }
+
+  function getLocationAndFetchWeather() {
+    if (!navigator.geolocation) {
+      showError('Geolocation is not supported by your browser.');
+      return;
+    }
+    showStatus('Locating you...');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
+      },
+      (error) => {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            showError('Geolocation permission denied.');
+            break;
+          case error.POSITION_UNAVAILABLE:
+            showError('Location information is unavailable.');
+            break;
+          case error.TIMEOUT:
+            showError('Location request timed out.');
+            break;
+          default:
+            showError('An unknown error occurred while fetching location.');
+            break;
+        }
+      },
+      { timeout: 10000 }
+    );
+  }
+
+  locationForm.addEventListener('submit', e => {
+    e.preventDefault();
+    fetchWeatherByLocation(locationInput.value);
+  });
+
+  geoBtn.addEventListener('click', () => {
+    getLocationAndFetchWeather();
+  });
+
+  // On page load, attempt to fetch weather via geolocation automatically
+  window.addEventListener('load', () => {
+    getLocationAndFetchWeather();
+  });
+})();
+</script>
+</body>
+</html>
+
+```
+

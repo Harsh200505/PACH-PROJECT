@@ -1,0 +1,261 @@
+`portfolio.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title> Harsh  - Personal Portfolio</title>
+  <style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+
+    /* Reset and base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      color: #eee;
+      min-height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+    }
+
+    /* Starry background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: transparent;
+      box-shadow:
+        10px 20px 1px #fff,
+        50px 70px 1px #fff,
+        80px 150px 1px #fff,
+        130px 60px 1px #fff,
+        200px 120px 1px #fff,
+        250px 200px 1px #fff,
+        300px 90px 1px #fff,
+        330px 160px 1px #fff,
+        360px 190px 1px #fff,
+        390px 40px 1px #fff;
+      animation: twinkle 3s infinite ease-in-out alternate;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes twinkle {
+      0%, 100% {opacity: 1;}
+      50% {opacity: 0.7;}
+    }
+
+    /* Container for all content */
+    .container {
+      position: relative;
+      max-width: 350px;
+      max-height: 600px;
+      margin: 0 auto;
+      padding: 20px 20px 40px;
+      overflow-y: auto;
+      background: rgba(10, 10, 20, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: thin;
+      scrollbar-color: #555 transparent;
+    }
+
+    /* Scrollbar style for Webkit */
+    .container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .container::-webkit-scrollbar-thumb {
+      background-color: #555;
+      border-radius: 10px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-weight: 600;
+      font-size: 2.2rem;
+      color: #ff6f61;
+      text-shadow: 0 0 8px #ff6f61;
+      user-select: text;
+      letter-spacing: 2px;
+    }
+
+    /* Home section */
+    #home {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    #home h2 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      color: #ffe6e1;
+      text-shadow: 0 0 6px #ff6f61;
+    }
+
+    #home img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #ff6f61;
+      object-fit: cover;
+      margin-bottom: 15px;
+      box-shadow: 0 0 15px #ff6f61;
+    }
+
+    #home p.skills-summary {
+      font-weight: 300;
+      font-size: 1rem;
+      color: #ddd;
+      line-height: 1.4;
+      padding: 0 10px;
+    }
+
+    /* About Section */
+    #about {
+      background: rgba(255, 111, 97, 0.05);
+      border-radius: 12px;
+      padding: 15px 20px;
+      color: #ffe6e1;
+      box-shadow: 0 0 15px #ff6f61;
+    }
+
+    #about h3 {
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      text-align: center;
+      text-shadow: 0 0 5px #ff6f61;
+    }
+
+    #about section {
+      margin-bottom: 20px;
+    }
+
+    #about section:last-child {
+      margin-bottom: 0;
+    }
+
+    #about h4 {
+      font-weight: 600;
+      color: #ff9b8a;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+      border-left: 4px solid #ff6f61;
+      padding-left: 10px;
+      user-select: text;
+    }
+
+    #about p, #about li {
+      font-weight: 300;
+      line-height: 1.4;
+      font-size: 0.95rem;
+      user-select: text;
+    }
+
+    #about ul {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+
+    /* Responsive text scaling */
+    @media (max-width: 360px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+      #home h2 {
+        font-size: 1.3rem;
+      }
+      #about h4 {
+        font-size: 1rem;
+      }
+      #about p, #about li {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      user-select: none;
+      padding-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container" role="main" tabindex="0">
+    <header>
+      <h1>Comillas Negras</h1>
+    </header>
+
+    <section id="home" aria-label="Home section">
+      <h2>Web Developer &amp; Designer</h2>
+      <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&h=200" alt="Professional portrait of web developer" />
+      <p class="skills-summary">
+        Skilled in HTML, CSS, JavaScript, React, and responsive design.<br />
+        Passionate about creating sleek, user-friendly web experiences.
+      </p>
+    </section>
+
+    <section id="about" aria-label="About Me section">
+      <h3>About Me</h3>
+
+      <section id="background">
+        <h4>Background</h4>
+        <p>
+          I am a dedicated web developer with over 5 years of experience building interactive, mobile-friendly websites and applications. I enjoy combining technical skills with creative design to deliver beautiful and functional web solutions.
+        </p>
+      </section>
+
+      <section id="education">
+        <h4>Education</h4>
+        <ul>
+          <li>Bachelor of Science in Computer Science – University of Technology, 2016</li>
+          <li>Certified Frontend Developer – FreeCodeCamp, 2018</li>
+        </ul>
+      </section>
+
+      <section id="experience">
+        <h4>Professional Experience</h4>
+        <ul>
+          <li>Frontend Developer at Creative Agency (2018 - Present)</li>
+          <li>Web Designer Intern at Web Solutions Co. (2016 - 2018)</li>
+        </ul>
+      </section>
+    </section>
+
+    <footer>
+      &copy; 2024 Comillas Negras | Web Portfolio
+    </footer>
+  </div>
+</body>
+</html>
+
+```
+
